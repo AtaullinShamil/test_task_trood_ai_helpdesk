@@ -9,6 +9,14 @@ Test task for golang developer
 * python3 -m spacy download en_core_web_sm
 * python3 nlp_server/nlp_server.py
 
+### in second terminal :
+* docker-compose up -d
+* go run cmd/main.go
+
+### in third terminal
+* go run worker/main.go
+
+
 ## task
 
 ```
