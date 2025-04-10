@@ -68,7 +68,7 @@ func sendHandler(rmqClient *rabbitmq.RabbitMQClient, responseMsgs <-chan amqp.De
 			return c.Status(fiber.StatusInternalServerError).SendString("Failed to receive response")
 		}
 
-		return c.SendString("Response: " + string(response))
+		return c.SendString(string(response))
 	}
 }
 

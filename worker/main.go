@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/AtaullinShamil/test_task_trood_ai_helpdesk/config"
+	"github.com/AtaullinShamil/test_task_trood_ai_helpdesk/pkg/db"
+	"github.com/AtaullinShamil/test_task_trood_ai_helpdesk/pkg/nlp"
 	"github.com/AtaullinShamil/test_task_trood_ai_helpdesk/pkg/rabbitmq"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -15,6 +17,8 @@ func main() {
 	if err != nil {
 		logger.Fatal(errors.Wrap(err, "Load"))
 	}
+
+	db := db.NewMockDB()
 
 	rmqClient, err := rabbitmq.NewClient(cfg.RabbitMQ.URL)
 	if err != nil {
@@ -37,10 +41,15 @@ func main() {
 	logger.Info("Service started")
 
 	for message := range messages {
-		// To Do
-		responseMessage := "Processed: " + string(message.Body)
+		nlpResult, err := nlp.GetIntent(string(message.Body))
+		if err != nil {
+			logger.Error(errors.Wrap(err, "AnalyzeText"))
+		}
 
-		err := rmqClient.PublishMessage("HelpdeskResponse", responseMessage, message.CorrelationId)
+		answer, _ := db.GetAnswer(nlpResult.Intent)
+		//To Do
+
+		err = rmqClient.PublishMessage("HelpdeskResponse", answer, message.CorrelationId)
 		if err != nil {
 			logger.Error(errors.Wrap(err, "PublishMessage"))
 		}

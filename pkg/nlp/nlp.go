@@ -7,19 +7,18 @@ import (
 	"net/http"
 )
 
-type AnalyzeRequest struct {
+type IntentRequest struct {
 	Text string `json:"text"`
 }
 
-type AnalyzeResponse struct {
-	Tokens   []string    `json:"tokens"`
-	Entities [][2]string `json:"entities"`
-	PosTags  [][2]string `json:"pos_tags"`
+type IntentResponse struct {
+	Intent string `json:"intent"`
 }
 
-func AnalyzeText(text string) (*AnalyzeResponse, error) {
-	url := "http://localhost:5000/analyze"
-	reqBody := AnalyzeRequest{Text: text}
+func GetIntent(text string) (*IntentResponse, error) {
+	url := "http://localhost:5000/intent"
+	reqBody := IntentRequest{Text: text}
+
 	reqJSON, err := json.Marshal(reqBody)
 	if err != nil {
 		return nil, err
@@ -36,7 +35,7 @@ func AnalyzeText(text string) (*AnalyzeResponse, error) {
 		return nil, err
 	}
 
-	var response AnalyzeResponse
+	var response IntentResponse
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return nil, err
