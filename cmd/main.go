@@ -68,12 +68,15 @@ func sendHandler(rmqClient *rabbitmq.RabbitMQClient, responseMsgs <-chan amqp.De
 			return c.Status(fiber.StatusInternalServerError).SendString("Failed to receive response")
 		}
 
-		return c.SendString(string(response))
+		return c.JSON(fiber.Map{
+			"status":  "success",
+			"message": string(response),
+		})
 	}
 }
 
 func waitForResponse(responseMsgs <-chan amqp.Delivery, correlationID string) ([]byte, error) {
-	timeout := time.After(10 * time.Second)
+	timeout := time.After(time.Minute)
 
 	for {
 		select {

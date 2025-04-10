@@ -5,17 +5,44 @@ app = Flask(__name__)
 nlp = spacy.load("en_core_web_sm")
 
 INTENT_RULES = {
-    "refund": ["refund", "return", "money back"],
-    "orderStatus": ["order status", "where is my order", "track", "delivery"],
-    "greeting": ["hi", "hello", "hey", "good morning", "good evening"],
-    "goodbye": ["bye", "goodbye", "see you", "thanks"],
-    "cancelOrder": ["cancel", "cancel my order", "stop order"],
-    "changeAddress": ["change address", "wrong address", "update shipping"],
-    "technicalIssue": ["error", "bug", "not working", "crash", "issue", "problem"],
-    "paymentIssue": ["payment", "card declined", "checkout failed", "can’t pay"],
-    "speakToHuman": ["talk to a person", "human", "agent", "representative"],
-    "productInfo": ["product info", "tell me about", "details", "specs"]
+    "refund": [
+        "refund", "return", "money back"
+    ],
+    "orderStatus": [
+        "order status", "where is my order", "track", "delivery"
+    ],
+    "greeting": [
+        "hi", "hello", "hey", "good morning", "good evening"
+    ],
+    "goodbye": [
+        "bye", "goodbye", "see you", "thanks"
+    ],
+    "cancelOrder": [
+        "cancel", "cancel my order", "stop order"
+    ],
+    "changeAddress": [
+        "change address", "wrong address", "update shipping"
+    ],
+    "technicalIssue": [
+        "error", "bug", "not working", "crash", "issue", "problem"
+    ],
+    "paymentIssue": [
+        "payment", "card declined", "checkout failed", "can’t pay"
+    ],
+    "speakToHuman": [
+        "talk to a person", "human", "agent", "representative"
+    ],
+    "productInfo": [
+        "product info", "tell me about", "details", "specs"
+    ],
+    "businessHours": [
+        "business hours", "working hours", "when are you open"
+    ],
+    "supportContact": [
+        "contact support", "support team", "how to contact support"
+    ]
 }
+
 
 def extract_lemmas(doc):
     return [token.lemma_.lower() for token in doc]

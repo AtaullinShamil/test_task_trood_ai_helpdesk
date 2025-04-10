@@ -32,6 +32,9 @@ func main() {
 	if err := rmqClient.DeclareQueue("HelpdeskResponse"); err != nil {
 		logger.Fatal(errors.Wrap(err, "DeclareQueue HelpdeskResponse"))
 	}
+	if err := rmqClient.DeclareQueue("HelpdeskHuman"); err != nil {
+		logger.Fatal(errors.Wrap(err, "DeclareQueue HelpdeskHuman"))
+	}
 
 	messages, err := rmqClient.ConsumeMessages("Helpdesk")
 	if err != nil {
@@ -46,12 +49,18 @@ func main() {
 			logger.Error(errors.Wrap(err, "AnalyzeText"))
 		}
 
-		answer, _ := db.GetAnswer(nlpResult.Intent)
-		//To Do
-
-		err = rmqClient.PublishMessage("HelpdeskResponse", answer, message.CorrelationId)
-		if err != nil {
-			logger.Error(errors.Wrap(err, "PublishMessage"))
+		answer, exists := db.GetAnswer(nlpResult.Intent)
+		if !exists {
+			logger.Info("No answer found, sending request to HelpdeskHuman queue")
+			err = rmqClient.PublishMessage("HelpdeskHuman", string(message.Body), message.CorrelationId)
+			if err != nil {
+				logger.Error(errors.Wrap(err, "PublishMessage to HelpdeskHuman"))
+			}
+		} else {
+			err = rmqClient.PublishMessage("HelpdeskResponse", answer, message.CorrelationId)
+			if err != nil {
+				logger.Error(errors.Wrap(err, "PublishMessage"))
+			}
 		}
 	}
 }

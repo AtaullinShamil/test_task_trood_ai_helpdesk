@@ -1,23 +1,36 @@
 # test_task_trood_ai_helpdesk
 Test task for golang developer
 
-## How to use
+## Description
+```
+The project is an example of a simple system for automated customer support. The system receives a request and sends it to a RabbitMQ queue. Workers process the received message. It is passed to an NLP model, and based on the extracted intents, a response is returned from db. If no response is found, the message is forwarded to a human support agent, the functionality of which is implemented through the terminal. The support agent's response is then returned to the client.
+```
 
-### in first terminal :
+## How to use
+### in first terminal (nlp server) :
 * pip3 install flask
 * pip3 install spacy
 * python3 -m spacy download en_core_web_sm
 * python3 nlp_server/nlp_server.py
 
-### in second terminal :
+### in second terminal (main api) : 
 * docker-compose up -d
 * go run cmd/main.go
 
-### in third terminal
+### in third terminal (workers) :
 * go run worker/main.go
 
+### in the fourth terminal (helpdesk):
+here you can answer questions that were not found in the database
+* go run human/main.go 
 
-## task
+for test you can use :
+```
+curl "http://localhost:3000/helpdesk?msg=i%20want%20to%20issue%20refund"
+```
+
+
+## Task
 
 ```
 Backend Engineer Task (Brief Solution Proposal + Code)
